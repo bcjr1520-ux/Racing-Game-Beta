@@ -18,21 +18,23 @@ export function SetupPanel() {
   const clearPeriodEvents = useCircuit((s) => s.clearPeriodEvents);
   const resetBoard = useCircuit((s) => s.resetBoard);
   const importState = useCircuit((s) => s.importState);
-  const snapshot = useCircuit((s) => ({
-    version: s.version,
-    teams: s.teams,
-    associates: s.associates,
-    events: s.events,
-    prizes: s.prizes,
-    spins: s.spins,
-    mode: s.mode,
-    period: s.period,
-    lapGoal: s.lapGoal,
-    bundleThreshold: s.bundleThreshold,
-    pendingBonusId: s.pendingBonusId,
-  }));
 
   function exportJson() {
+    // Build snapshot only when exporting (not on every render)
+    const s = useCircuit.getState();
+    const snapshot = {
+      version: s.version,
+      teams: s.teams,
+      associates: s.associates,
+      events: s.events,
+      prizes: s.prizes,
+      spins: s.spins,
+      mode: s.mode,
+      period: s.period,
+      lapGoal: s.lapGoal,
+      bundleThreshold: s.bundleThreshold,
+      pendingBonusId: s.pendingBonusId,
+    };
     const blob = new Blob([JSON.stringify(snapshot, null, 2)], {
       type: "application/json",
     });
