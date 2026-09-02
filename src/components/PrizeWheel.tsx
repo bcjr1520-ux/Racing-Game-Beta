@@ -43,8 +43,9 @@ export function PrizeWheel({
         ang.current += vel.current;
         const n = Math.max(1, segments.length);
         const seg = (2 * Math.PI) / n;
-        const idx =
-          Math.floor(((-ang.current + Math.PI / 2) % (Math.PI * 2) + Math.PI * 2) / seg) % n;
+        const twoPi = Math.PI * 2;
+        const normalized = (((-ang.current) % twoPi) + twoPi) % twoPi;
+        const idx = Math.floor(normalized / seg) % n;
         if (idx !== lastTick.current) {
           lastTick.current = idx;
           if (sound) playSpinTick();
@@ -102,11 +103,13 @@ export function PrizeWheel({
       ctx.font = "700 11px 'Barlow Condensed', sans-serif";
       ctx.textAlign = "center";
       ctx.fillText("SPIN", cx, cy + 4);
+
+      // Pointer at top — tip points DOWN at the wheel
       ctx.fillStyle = TEAM_SWATCHES.crimson;
       ctx.beginPath();
-      ctx.moveTo(cx, 18);
-      ctx.lineTo(cx - 10, 36);
-      ctx.lineTo(cx + 10, 36);
+      ctx.moveTo(cx, 42); // tip (bottom)
+      ctx.lineTo(cx - 11, 22); // top-left
+      ctx.lineTo(cx + 11, 22); // top-right
       ctx.closePath();
       ctx.fill();
       raf = requestAnimationFrame(loop);
