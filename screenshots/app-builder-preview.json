@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Circuit",
+      "hasCanvas": false,
+      "bodyTextLen": 13,
+      "bodyTextHash": "ef935cfa439d1cb8c056d4961aefce980c228b19ed785aa8ea00779dca6ab7a4",
+      "bodyTextPrefix": "Loading board",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Circuit",
+      "hasCanvas": false,
+      "bodyTextLen": 13,
+      "bodyTextHash": "ef935cfa439d1cb8c056d4961aefce980c228b19ed785aa8ea00779dca6ab7a4",
+      "bodyTextPrefix": "Loading board",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
