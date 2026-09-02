@@ -24,6 +24,7 @@ export function TrackCanvas() {
   const vis = useRef<CarVis[]>([]);
   const particles = useRef<Particle[]>([]);
   const lastScores = useRef<Record<string, number>>({});
+
   const teams = useCircuit((s) => s.teams);
   const events = useCircuit((s) => s.events);
   const mode = useCircuit((s) => s.mode);
@@ -31,25 +32,41 @@ export function TrackCanvas() {
   const lapGoal = useCircuit((s) => s.lapGoal);
   const theater = useCircuit((s) => s.theater);
 
+  // 1) Keep latest filter/score data in a ref so the animation loop can read it
+  const stateRef = useRef({ teams, events, mode, period, lapGoal, theater });
+  stateRef.current = { teams, events, mode, period, lapGoal, theater };
+
+  // 2) When mode/period changes, reset score flashes (does NOT restart the loop)
+  useEffect(() => {
+    lastScores.current = {};
+  }, [mode, period]);
+
+  // 3) One animation loop for the life of the component (empty dependency array)
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
     let raf = 0;
     let last = performance.now();
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const draw = (now: number) => {
+      // Read latest values every frame
+      const { teams, events, mode, period, lapGoal } = stateRef.current;
+
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
+
       if (canvas.width !== Math.floor(w * dpr) || canvas.height !== Math.floor(h * dpr)) {
         canvas.width = Math.floor(w * dpr);
         canvas.height = Math.floor(h * dpr);
       }
+
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
 
@@ -157,6 +174,7 @@ export function TrackCanvas() {
         const offset = (lane - 2) * 7;
         const pos = oval(v.t % 1, cx, cy, rx + offset, ry + offset * 0.55);
         const color = TEAM_SWATCHES[row.team.swatch];
+
         ctx.save();
         ctx.translate(pos.x, pos.y);
         ctx.rotate(pos.a + Math.PI / 2);
@@ -197,9 +215,10 @@ export function TrackCanvas() {
 
       raf = requestAnimationFrame(draw);
     };
+
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);
-  }, [teams, events, mode, period, lapGoal, theater]);
+  }, []); // <-- was [teams, events, mode, period, lapGoal, theater]
 
   return (
     <canvas
