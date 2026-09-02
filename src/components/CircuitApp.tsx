@@ -224,13 +224,12 @@ export function CircuitApp() {
       ) : null}
 
       <QuickLog
-        open={logOpen}
-        onOpenChange={setLogOpen}
-        onBundle={(id) => {
-          setSpinFor(id);
-          setWheelOpen(true);
-        }}
-      />
+  open={logOpen}
+  onOpenChange={setLogOpen}
+  onBundle={() => {
+    // Bundle logged — wheel stays closed unless opened from the gift icon
+  }}
+/>
 
       <Sheet open={wheelOpen} onOpenChange={setWheelOpen}>
         <SheetContent side="bottom" className="p-6">
