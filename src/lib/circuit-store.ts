@@ -46,6 +46,8 @@ type Actions = {
   clearPeriodEvents: () => void;
   resetBoard: () => void;
   importState: (raw: unknown) => boolean;
+  addTeam: (name: string) => void;
+removeTeam: (id: string) => void;
 };
 
 export type CircuitStore = CircuitState & { hydrated: boolean } & Actions;
@@ -81,6 +83,25 @@ export const useCircuit = create<CircuitStore>()(
             t.id === id ? { ...t, name: name.trim() || t.name } : t,
           ),
         }),
+      addTeam: (name) => {
+  const trimmed = name.trim();
+  if (!trimmed) return;
+  const swatches = ["crimson", "teal", "steel", "sand", "olive"] as const;
+  const used = new Set(get().teams.map((t) => t.swatch));
+  const swatch = swatches.find((s) => !used.has(s)) ?? "steel";
+  const id = uid();
+  set({
+    teams: [...get().teams, { id, name: trimmed, swatch }],
+  });
+},
+removeTeam: (id) => {
+  if (get().teams.length <= 2) return; // keep at least 2 teams
+  set({
+    teams: get().teams.filter((t) => t.id !== id),
+    associates: get().associates.filter((a) => a.teamId !== id),
+    events: get().events.filter((e) => e.teamId !== id),
+  });
+},
       setTeamSwatch: (id, swatch) =>
         set({
           teams: get().teams.map((t) => (t.id === id ? { ...t, swatch } : t)),
