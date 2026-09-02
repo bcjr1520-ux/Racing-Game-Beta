@@ -86,7 +86,18 @@ export const useCircuit = create<CircuitStore>()(
       addTeam: (name) => {
   const trimmed = name.trim();
   if (!trimmed) return;
-  const swatches = ["crimson", "teal", "steel", "sand", "olive"] as const;
+  const swatches = [
+  "crimson",
+  "teal",
+  "steel",
+  "sand",
+  "olive",
+  "slate",
+  "plum",
+  "copper",
+  "pine",
+  "ink",
+] as const;
   const used = new Set(get().teams.map((t) => t.swatch));
   const swatch = swatches.find((s) => !used.has(s)) ?? "steel";
   const id = uid();
